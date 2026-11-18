@@ -78,7 +78,7 @@ footer{padding:28px 0;border-top:1px solid rgba(0,180,255,.2);color:#7f8ba2;font
 .events-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
 .event-card{padding:22px;border:1px solid rgba(0,160,255,.25);border-radius:7px;background:linear-gradient(145deg,#0d1928,#17100f);box-shadow:0 0 20px #0088ff12}
 .event-card h3{font-size:18px;margin:0 0 10px;color:#fff}.event-date{color:var(--cyan);font-weight:700;letter-spacing:1px}.event-card p{color:var(--muted);white-space:pre-wrap}.events-empty{text-align:center;color:var(--muted)}
-.admin-access{max-width:760px;margin:auto;text-align:center}.admin-toggle{border:1px solid #ff754b66;background:#0b1018;color:#aab5c7;padding:10px 16px;border-radius:4px;font:700 11px Orbitron;letter-spacing:1px;cursor:pointer}
+.admin-access{max-width:760px;margin:auto;text-align:center}.admin-toggle{border:1px solid #ff754b66;background:#0b1018;color:#aab5c7;padding:10px 16px;border-radius:4px;font:700 11px Orbitron;letter-spacing:1px;cursor:pointer}nav .admin-nav-link{border:0;background:transparent;color:#c5cee0;font:inherit;font-size:16px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;padding:0}nav .admin-nav-link:hover{color:#fff;text-shadow:0 0 12px var(--cyan)}
 #admin-panel{margin-top:25px;padding:24px;border:1px solid var(--line);border-radius:7px;background:linear-gradient(145deg,#0b1420,#120d0c);text-align:left}
 .admin-form{display:grid;gap:10px;max-width:600px;margin:0 auto 24px}.admin-form label{color:#c5cee0;font-weight:700}.admin-form input,.admin-form textarea{width:100%;padding:12px;border:1px solid #34516c;border-radius:4px;background:#070c13;color:#fff;font:16px Rajdhani}.admin-form input:focus,.admin-form textarea:focus{outline:1px solid var(--cyan)}
 .admin-form .btn{cursor:pointer;margin-top:8px}.admin-form [type=checkbox]{width:auto}.publish-check{display:flex;align-items:center;gap:9px}
@@ -100,7 +100,7 @@ footer{padding:28px 0;border-top:1px solid rgba(0,180,255,.2);color:#7f8ba2;font
 <body>
 <header><div class="wrap nav">
   <a class="brand" href="#inicio"><img id="w7-header-logo" class="brand-logo" alt="Logo W7 França"><span>W7 <em>FRANÇA</em></span></a>
-  <nav><a href="#guilda">A Guilda</a><a href="#regras">Regras</a><a href="#eventos">Eventos</a><a href="#punicoes">Punições</a></nav>
+  <nav><a href="#guilda">A Guilda</a><a href="#regras">Regras</a><a href="#eventos">Eventos</a><a href="#punicoes">Punições</a><button class="admin-nav-link" id="admin-toggle" type="button">Acesso ADM</button></nav>
   <a class="nav-cta" href="https://wa.me/555491362965?text=Ol%C3%A1%21%20Tenho%20interesse%20em%20entrar%20na%20guilda%20W7%20Fran%C3%A7a." target="_blank" rel="noopener noreferrer">Junte-se à W7</a>
 </div></header>
 <main>
@@ -174,7 +174,6 @@ footer{padding:28px 0;border-top:1px solid rgba(0,180,255,.2);color:#7f8ba2;font
 </section>
 <section class="wrap" id="admin">
  <div class="admin-access">
-  <button class="admin-toggle" id="admin-toggle" type="button">⚙ ACESSO ADM</button>
   <div id="admin-panel" hidden>
    <div class="section-head"><div class="section-kicker">ÁREA RESTRITA</div><h2>Painel administrativo</h2><p>Entre com a conta de administrador para publicar e gerenciar os eventos.</p></div>
    <form id="admin-login" class="admin-form">
