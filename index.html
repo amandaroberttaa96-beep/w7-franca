@@ -128,9 +128,53 @@ footer{padding:28px 0;border-top:1px solid rgba(0,180,255,.2);color:#7f8ba2;font
 @media(max-width:420px){
  .brand span{font-size:14px}.brand-logo{width:42px;height:42px}.stats{gap:7px}.stat{padding:12px 7px}.stat strong{font-size:16px}.stat small{font-size:11px}nav{gap:13px}
 }
-#w7-intro{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;overflow:hidden;background:#020308;animation:w7hide .8s ease 4.4s forwards}#w7-intro:before{content:"";position:absolute;inset:-25%;background:radial-gradient(ellipse at 50% 80%,#ff4b0b99,transparent 38%),radial-gradient(ellipse at 50% 35%,#087dff99,transparent 45%);filter:blur(22px);animation:w7pulse 1s infinite alternate}#w7-intro:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,transparent 0 18%,#ff6b1a18 19%,transparent 20% 38%);animation:w7flash 1.2s infinite}#w7-intro .w7bolts{position:absolute;inset:0;background:linear-gradient(115deg,transparent 38%,#8ceaff 39%,transparent 40%),linear-gradient(65deg,transparent 62%,#168bff 63%,transparent 64%);opacity:0;filter:drop-shadow(0 0 14px #00bfff);animation:w7bolt 1.3s infinite}#w7-intro img{position:relative;z-index:2;width:min(76vw,480px);max-height:62vh;object-fit:contain;filter:drop-shadow(0 0 24px #008cff) drop-shadow(0 0 38px #ff4a12);animation:w7logo 4.6s both}#w7-intro .w7caption{position:absolute;z-index:3;bottom:12%;font:800 16px Orbitron,sans-serif;letter-spacing:.3em;color:#eaf8ff;text-shadow:0 0 12px #008cff,0 0 22px #ff4a12}@keyframes w7hide{to{opacity:0;visibility:hidden;pointer-events:none}}@keyframes w7pulse{to{transform:scale(1.2);opacity:.65}}@keyframes w7flash{0%,40%,44%,100%{opacity:.2}42%{opacity:.95}}@keyframes w7bolt{0%,20%,22%,65%,68%,100%{opacity:0}21%,66%{opacity:.95}}@keyframes w7logo{0%{opacity:0;transform:scale(.45) translateY(35px);filter:brightness(0)}35%{opacity:1;transform:scale(1.08);filter:brightness(1.5) drop-shadow(0 0 28px #008cff)}60%{transform:scale(.98)}100%{opacity:1;transform:scale(1)}}@media(prefers-reduced-motion:reduce){#w7-intro{display:none}}</style>
+#w7-intro{
+ position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;
+ align-items:center;justify-content:center;gap:24px;overflow:hidden;
+ background:#020308;isolation:isolate;
+ animation:w7hide .8s ease 4.4s forwards
+}
+#w7-intro .w7-intro-bg{
+ position:absolute;inset:0;width:100vw;height:100vh;object-fit:cover;
+ z-index:0;pointer-events:none
+}
+#w7-intro:before{
+ content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+ background:radial-gradient(ellipse at 50% 50%,rgba(2,5,12,.12),rgba(2,3,8,.38) 75%);
+}
+#w7-intro:after{
+ content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+ background:radial-gradient(ellipse at 50% 78%,rgba(255,69,0,.16),transparent 48%),
+ radial-gradient(ellipse at 50% 22%,rgba(0,150,255,.16),transparent 48%);
+ animation:w7pulse 2.8s ease-in-out infinite alternate
+}
+#w7-intro .w7bolts{position:absolute;inset:0;z-index:2;pointer-events:none;
+ background:linear-gradient(115deg,transparent 38%,rgba(140,234,255,.8) 39%,transparent 40%),
+ linear-gradient(65deg,transparent 62%,rgba(22,139,255,.8) 63%,transparent 64%);
+ opacity:0;filter:drop-shadow(0 0 14px #00bfff);animation:w7bolt 1.3s infinite
+}
+#w7-intro img#w7-intro-logo{
+ position:relative;z-index:3;display:block;width:min(76vw,480px);max-height:62vh;
+ object-fit:contain;border:0;outline:0;background:transparent;box-shadow:none;
+ mix-blend-mode:screen;
+ mask-image:radial-gradient(circle,black 40%,transparent 70%);
+ -webkit-mask-image:radial-gradient(circle,black 40%,transparent 70%);
+ filter:contrast(1.12) brightness(1.08) drop-shadow(0 0 24px #008cff88) drop-shadow(0 0 38px #ff4a1266);
+ animation:w7Reveal 1.5s ease-out both,w7SoftPulse 3.8s ease-in-out 1.5s infinite
+}
+#w7-intro .w7caption{
+ position:relative;z-index:3;margin:0;text-align:center;
+ font:800 16px Orbitron,sans-serif;letter-spacing:.3em;color:#eaf8ff;
+ text-shadow:0 0 12px #008cff,0 0 22px #ff4a12
+}
+@keyframes w7hide{to{opacity:0;visibility:hidden;pointer-events:none}}
+@keyframes w7pulse{to{transform:scale(1.08);opacity:.8}}
+@keyframes w7bolt{0%,20%,22%,65%,68%,100%{opacity:0}21%,66%{opacity:.95}}
+@keyframes w7Reveal{0%{opacity:0;transform:scale(.85)}100%{opacity:1;transform:scale(1)}}
+@keyframes w7SoftPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.018)}}
+@media(prefers-reduced-motion:reduce){#w7-intro{animation:none;display:none}#w7-intro img#w7-intro-logo,#w7-intro:after{animation:none}}</style>
 </head>
-<body><div id="w7-intro"><div class="w7bolts"></div><img id="w7-intro-logo" alt="W7 França"><div class="w7caption">FORÇA • HONRA • UNIÃO</div></div>
+<body><div id="w7-intro"><img class="w7-intro-bg" src="fundo-raios.gif" alt="" aria-hidden="true"><div class="w7bolts"></div><img id="w7-intro-logo" alt="W7 França"><div class="w7caption">FORÇA • HONRA • UNIÃO</div></div>
 <header><div class="wrap nav">
   <a class="brand" href="#inicio"><img id="w7-header-logo" class="brand-logo" alt="Logo W7 França"><span>W7 <em>FRANÇA</em></span></a>
   <nav><a href="#guilda">A Guilda</a><a href="#regras">Regras</a><a href="#eventos">Eventos</a><a href="#punicoes">Punições</a><button class="admin-nav-link" id="admin-toggle" type="button">Acesso ADM</button></nav>
