@@ -415,21 +415,35 @@ function showToast(){const el=document.getElementById('toast');el.classList.add(
  const close=document.getElementById("w7-music-close");
  if(!toggle||!panel||!frame||!close)return;
  const video="kiXPXUaA--Q";
+ let soundEnabled=false;
+ const videoUrl=(muted)=>"https://www.youtube.com/embed/"+video+"?autoplay=1&mute="+(muted?"1":"0")+"&playsinline=1&controls=1&rel=0";
  const start=()=>{
    panel.hidden=false;
    toggle.setAttribute("aria-expanded","true");
-   toggle.querySelector("span").textContent="VÍDEO W7 • SOM DESATIVADO";
-   if(!frame.src) frame.src="https://www.youtube.com/embed/"+video+"?autoplay=1&mute=0&playsinline=1&controls=1&rel=0";
+   soundEnabled=false;
+   toggle.querySelector("span").textContent="TOQUE PARA ATIVAR O SOM";
+   if(!frame.src) frame.src=videoUrl(true);
+ };
+ const enableSound=()=>{
+   soundEnabled=true;
+   toggle.querySelector("span").textContent="SOM ATIVADO • FECHAR";
+   frame.src=videoUrl(false);
  };
  const shut=()=>{
    panel.hidden=true;
    frame.src="";
+   soundEnabled=false;
    toggle.setAttribute("aria-expanded","false");
    toggle.querySelector("span").textContent="OUVIR MÚSICA";
  };
- toggle.addEventListener("click",()=>panel.hidden?start():shut());
+ toggle.addEventListener("click",()=>{
+   if(panel.hidden) start();
+   else if(!soundEnabled) enableSound();
+   else shut();
+ });
  close.addEventListener("click",shut);
- // Tenta iniciar assim que o visitante entra. O navegador pode exigir um clique para liberar áudio.
+ // Vídeo começa automaticamente sem áudio, comportamento permitido na maioria dos celulares.
+ // O primeiro toque do visitante libera a tentativa de reprodução com som.
  start();
 })();
 </script>
