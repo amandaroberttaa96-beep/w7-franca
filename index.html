@@ -25,7 +25,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;bac
  linear-gradient(180deg,#05070a 0%,#080b11 58%,#05070a 100%)}
 body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.12;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:44px 44px}
 a{color:inherit;text-decoration:none}.wrap{width:min(1160px,92%);margin:auto}
-header{position:sticky;top:0;z-index:10;background:rgba(5,7,10,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(0,180,255,.24);box-shadow:0 5px 28px #0009}
+header{position:sticky;top:0;z-index:10;background:rgba(5,7,10,.88);backdrop-filter:blur(8px);border-bottom:1px solid rgba(0,180,255,.24);box-shadow:0 5px 28px #0009}
 .nav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px}
 .brand{display:flex;align-items:center;gap:12px;font-family:Orbitron,sans-serif;font-weight:900;letter-spacing:2px}
 .brand-logo{width:50px;height:50px;object-fit:contain;border:0;border-radius:0;background:transparent;box-shadow:0 0 15px #0088ff77,0 0 24px #ff450044;mix-blend-mode:screen}
@@ -55,7 +55,7 @@ h1 .w7{background:linear-gradient(95deg,#8ddfff 0%,#f8fcff 35%,#ffad67 68%,#ff3e
  -webkit-mask-image:radial-gradient(ellipse at center,black 35%,transparent 72%);
  mask-image:radial-gradient(circle,black 45%,transparent 72%);
  filter:contrast(1.15) brightness(1.1) drop-shadow(0 0 22px #007bff55) drop-shadow(0 0 25px #ff450044);
- animation:w7LogoBreath 4s ease-in-out infinite
+
 }
 @keyframes w7BlueSurge{0%{transform:translate(-2%,1%) scale(.96);opacity:.25}100%{transform:translate(2%,-1%) scale(1.08);opacity:.7}}
 @keyframes w7FireSurge{0%{transform:translate(2%,-1%) scale(.96);opacity:.25}100%{transform:translate(-2%,1%) scale(1.08);opacity:.72}}
@@ -293,11 +293,11 @@ document.getElementById('w7-hero-logo').src = W7_LOGO_DATA_URI;
    age:initial?rand(0,100):0,alpha:rand(.22,.68),phase:rand(0,Math.PI*2)};
  }
  function resize(){
-  dpr=Math.min(window.devicePixelRatio||1,2);w=host.clientWidth;h=host.clientHeight;
+  dpr=Math.min(window.devicePixelRatio||1,1.5);w=host.clientWidth;h=host.clientHeight;
   canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);
   canvas.style.width=w+'px';canvas.style.height=h+'px';
   ctx.setTransform(dpr,0,0,dpr,0,0);
-  const count=Math.max(34,Math.round(w/22));
+  const count=Math.max(18,Math.round(w/40));
   particles=Array.from({length:count},(_,i)=>makeParticle(true,i%2?'orange':'blue'));
  }
  function aura(t){
@@ -328,7 +328,7 @@ document.getElementById('w7-hero-logo').src = W7_LOGO_DATA_URI;
   ctx.restore();
  }
  resize();window.addEventListener('resize',resize,{passive:true});
- if(!reduce)raf=requestAnimationFrame(frame);
+ if(!reduce){raf=requestAnimationFrame(frame);host.addEventListener('animationend',e=>{if(e.animationName==='w7hide'){cancelAnimationFrame(raf);raf=0;ctx.clearRect(0,0,w,h);particles=[];}},{once:true});}
  window.addEventListener('pagehide',()=>cancelAnimationFrame(raf),{once:true});
 })();</script>
 <script>
@@ -418,8 +418,8 @@ function showToast(){const el=document.getElementById('toast');el.classList.add(
  const start=()=>{
    panel.hidden=false;
    toggle.setAttribute("aria-expanded","true");
-   toggle.querySelector("span").textContent="MÚSICA DA W7";
-   if(!frame.src) frame.src="https://www.youtube.com/embed/"+video+"?autoplay=1&playsinline=1&rel=0";
+   toggle.querySelector("span").textContent="VÍDEO W7 • SOM DESATIVADO";
+   if(!frame.src) frame.src="https://www.youtube.com/embed/"+video+"?autoplay=1&mute=1&playsinline=1&controls=1&rel=0";
  };
  const shut=()=>{
    panel.hidden=true;
