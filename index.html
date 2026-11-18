@@ -223,4 +223,66 @@ function copyId(){const id='2058669267';if(navigator.clipboard&&window.isSecureC
 function fallback(){const t=document.createElement('textarea');t.value='2058669267';document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();showToast()}
 function showToast(){const el=document.getElementById('toast');el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1800)}
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+ const SUPABASE_URL="https://rhcijuyktgqstjvveetp.supabase.co";
+ const SUPABASE_ANON_KEY="sb_publishable_hmBPgBEEvT8ZYBMH7Wl5cg_eG5N5IQK";
+ const $=id=>document.getElementById(id);
+ const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+ const toggle=$("admin-toggle"), panel=$("admin-panel");
+ if(toggle&&panel) toggle.addEventListener("click",()=>{panel.hidden=!panel.hidden; if(!panel.hidden) panel.scrollIntoView({behavior:"smooth",block:"center"});});
+ const message=(s)=>{if($("admin-message")) $("admin-message").textContent=s;};
+ const dateText=d=>{if(!d)return "";const [y,m,day]=d.split("-");return day+"/"+m+"/"+y;};
+ function renderEvents(items){
+  const list=$("events-list"), empty=$("events-empty");
+  if(!list)return;
+  list.innerHTML="";
+  if(!items||!items.length){if(empty)empty.hidden=false;return;}
+  if(empty)empty.hidden=true;
+  items.forEach(ev=>{const card=document.createElement("article");card.className="event-card";
+   const date=document.createElement("div");date.className="event-date";date.textContent=dateText(ev.event_date)+(ev.event_time?" • "+ev.event_time.slice(0,5):"");
+   const title=document.createElement("h3");title.textContent=ev.title;
+   const desc=document.createElement("p");desc.textContent=ev.description||"";
+   card.append(date,title,desc);list.appendChild(card);
+  });
+ }
+ async function loadPublic(){const {data,error}=await client.from("events").select("*").eq("published",true).gte("event_date",new Date().toISOString().slice(0,10)).order("event_date",{ascending:true});if(error){console.error(error);renderEvents([]);return;}renderEvents(data);}
+ async function loadAdminEvents(){
+  const {data,error}=await client.from("events").select("*").order("event_date",{ascending:true});
+  if(error){message("Erro ao carregar eventos: "+error.message);return;}
+  const list=$("admin-events-list");list.innerHTML="";
+  (data||[]).forEach(ev=>{
+   const row=document.createElement("div");row.className="admin-event-row";
+   const info=document.createElement("span");info.textContent=ev.title+" — "+dateText(ev.event_date)+(ev.published?" • Publicado":" • Rascunho");
+   const actions=document.createElement("span");
+   const edit=document.createElement("button");edit.type="button";edit.className="copy";edit.textContent="EDITAR";
+   edit.addEventListener("click",()=>{$("event-id").value=ev.id;$("event-title").value=ev.title;$("event-date").value=ev.event_date;$("event-time").value=ev.event_time||"";$("event-description").value=ev.description||"";$("event-published").checked=!!ev.published;$("event-cancel").hidden=false;$("event-form").scrollIntoView({behavior:"smooth"});});
+   const del=document.createElement("button");del.type="button";del.className="copy";del.textContent="EXCLUIR";
+   del.addEventListener("click",async()=>{if(!confirm("Excluir este evento?"))return;const {error}=await client.from("events").delete().eq("id",ev.id);if(error){message("Erro ao excluir: "+error.message);return;}await loadAdminEvents();await loadPublic();});
+   actions.append(edit,del);row.append(info,actions);list.appendChild(row);
+  });
+ }
+ $("admin-login")?.addEventListener("submit",async e=>{
+  e.preventDefault();message("Verificando acesso...");
+  const login=$("admin-email").value.trim();
+  const email=login.toLowerCase()==="adm"?"adm@w7franca.com":login;
+  const {error}=await client.auth.signInWithPassword({email,password:$("admin-password").value});
+  if(error){message("Não foi possível entrar. Confira usuário e senha.");console.error(error);return;}
+  $("admin-login").hidden=true;$("admin-tools").hidden=false;message("Acesso autorizado!");await loadAdminEvents();
+ });
+ $("admin-logout")?.addEventListener("click",async()=>{await client.auth.signOut();$("admin-login").hidden=false;$("admin-tools").hidden=true;message("Você saiu do painel.");});
+ $("event-form")?.addEventListener("submit",async e=>{
+  e.preventDefault();const id=$("event-id").value;
+  const payload={title:$("event-title").value.trim(),event_date:$("event-date").value,event_time:$("event-time").value||null,description:$("event-description").value.trim(),published:$("event-published").checked};
+  const result=id?await client.from("events").update(payload).eq("id",id):await client.from("events").insert(payload);
+  if(result.error){message("Erro ao salvar: "+result.error.message);return;}
+  message("Evento salvo com sucesso!");$("event-form").reset();$("event-id").value="";$("event-published").checked=true;$("event-cancel").hidden=true;await loadAdminEvents();await loadPublic();
+ });
+ $("event-cancel")?.addEventListener("click",()=>{$("event-form").reset();$("event-id").value="";$("event-published").checked=true;$("event-cancel").hidden=true;});
+ loadPublic();
+})();
+</script>
+
 </body></html>
