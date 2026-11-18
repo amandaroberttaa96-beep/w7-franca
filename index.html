@@ -141,6 +141,17 @@ footer{padding:28px 0;border-top:1px solid rgba(0,180,255,.2);color:#7f8ba2;font
 @keyframes w7LogoBreath{0%,100%{transform:scale(1);filter:contrast(1.13) brightness(1.08) drop-shadow(0 0 22px #00d4ff66) drop-shadow(0 0 30px #ff450055)}
  50%{transform:scale(1.018);filter:contrast(1.16) brightness(1.2) drop-shadow(0 0 30px #00d4ffbb) drop-shadow(0 0 38px #ff450099)}}
 @media(prefers-reduced-motion:reduce){#w7-intro{animation:none;display:none}#w7-intro:after,#w7-intro img#w7-intro-logo,#w7-intro .w7-logo-wrap{animation:none}}
+
+/* W7 YouTube music player */
+#w7-music-widget{position:fixed;right:20px;bottom:20px;z-index:9998;font-family:inherit;color:#fff}
+#w7-music-toggle{display:flex;align-items:center;gap:9px;border:1px solid rgba(0,212,255,.55);border-radius:999px;padding:12px 17px;background:linear-gradient(135deg,rgba(5,12,22,.96),rgba(24,12,8,.96));color:#fff;font-weight:800;letter-spacing:.08em;font-size:11px;cursor:pointer;box-shadow:0 0 18px rgba(0,212,255,.2),0 0 22px rgba(255,69,0,.12);backdrop-filter:blur(12px)}
+#w7-music-toggle:hover{border-color:#ff6a2a;box-shadow:0 0 22px rgba(0,212,255,.3),0 0 24px rgba(255,69,0,.2)}
+#w7-music-panel{width:min(320px,calc(100vw - 32px));margin-bottom:10px;padding:12px;border:1px solid rgba(0,212,255,.35);border-radius:15px;background:rgba(4,8,14,.97);box-shadow:0 12px 40px #0009,0 0 22px #00d4ff22}
+#w7-music-panel[hidden]{display:none}
+#w7-music-panel strong{display:block;margin:0 0 9px;font-size:11px;letter-spacing:.12em;color:#dceefa}
+#w7-music-frame{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:9px;background:#000}
+#w7-music-close{margin-top:9px;padding:7px 11px;border:1px solid #ffffff30;border-radius:7px;background:#ffffff0c;color:#ddd;font-size:10px;font-weight:700;cursor:pointer}
+@media(max-width:600px){#w7-music-widget{right:12px;bottom:12px}#w7-music-toggle{padding:11px 14px;font-size:10px}}
 </style>
 </head>
 <body><div id="w7-intro"><canvas id="w7-energy-canvas" aria-hidden="true"></canvas><div class="w7bolts" aria-hidden="true"></div><div class="w7-logo-wrap"><img id="w7-intro-logo" alt="W7 França"></div><div class="w7caption">FORÇA • HONRA • UNIÃO</div></div>
@@ -387,4 +398,37 @@ function showToast(){const el=document.getElementById('toast');el.classList.add(
 })();
 </script>
 
+
+<div id="w7-music-widget" aria-label="Música da W7">
+  <div id="w7-music-panel" hidden>
+    <strong>TRILHA SONORA • W7 FRANÇA</strong>
+    <iframe id="w7-music-frame" title="Música da W7 França" allow="autoplay; encrypted-media; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <button id="w7-music-close" type="button">FECHAR PLAYER</button>
+  </div>
+  <button id="w7-music-toggle" type="button" aria-expanded="false">♫ <span>OUVIR MÚSICA</span></button>
+</div>
+<script>
+(()=>{
+ const toggle=document.getElementById("w7-music-toggle");
+ const panel=document.getElementById("w7-music-panel");
+ const frame=document.getElementById("w7-music-frame");
+ const close=document.getElementById("w7-music-close");
+ if(!toggle||!panel||!frame||!close)return;
+ const video="kiXPXUaA--Q";
+ const open=()=>{
+   panel.hidden=false;
+   toggle.setAttribute("aria-expanded","true");
+   toggle.querySelector("span").textContent="MÚSICA TOCANDO";
+   if(!frame.src) frame.src="https://www.youtube.com/embed/"+video+"?autoplay=1&playsinline=1&rel=0";
+ };
+ const shut=()=>{
+   panel.hidden=true;
+   frame.src="";
+   toggle.setAttribute("aria-expanded","false");
+   toggle.querySelector("span").textContent="OUVIR MÚSICA";
+ };
+ toggle.addEventListener("click",()=>panel.hidden?open():shut());
+ close.addEventListener("click",shut);
+})();
+</script>
 </body></html>
