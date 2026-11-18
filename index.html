@@ -415,10 +415,10 @@ function showToast(){const el=document.getElementById('toast');el.classList.add(
  const close=document.getElementById("w7-music-close");
  if(!toggle||!panel||!frame||!close)return;
  const video="kiXPXUaA--Q";
- const open=()=>{
+ const start=()=>{
    panel.hidden=false;
    toggle.setAttribute("aria-expanded","true");
-   toggle.querySelector("span").textContent="MÚSICA TOCANDO";
+   toggle.querySelector("span").textContent="MÚSICA DA W7";
    if(!frame.src) frame.src="https://www.youtube.com/embed/"+video+"?autoplay=1&playsinline=1&rel=0";
  };
  const shut=()=>{
@@ -427,8 +427,10 @@ function showToast(){const el=document.getElementById('toast');el.classList.add(
    toggle.setAttribute("aria-expanded","false");
    toggle.querySelector("span").textContent="OUVIR MÚSICA";
  };
- toggle.addEventListener("click",()=>panel.hidden?open():shut());
+ toggle.addEventListener("click",()=>panel.hidden?start():shut());
  close.addEventListener("click",shut);
+ // Tenta iniciar assim que o visitante entra. O navegador pode exigir um clique para liberar áudio.
+ start();
 })();
 </script>
 </body></html>
