@@ -149,7 +149,7 @@ footer{padding:28px 0;border-top:1px solid rgba(0,180,255,.2);color:#7f8ba2;font
 #w7-music-panel{width:min(320px,calc(100vw - 32px));margin-bottom:10px;padding:12px;border:1px solid rgba(0,212,255,.35);border-radius:15px;background:rgba(4,8,14,.97);box-shadow:0 12px 40px #0009,0 0 22px #00d4ff22}
 #w7-music-panel[hidden]{display:none}
 #w7-music-panel strong{display:block;margin:0 0 9px;font-size:11px;letter-spacing:.12em;color:#dceefa}
-#w7-music-frame{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:9px;background:#000}
+#w7-music-audio{display:block;width:100%;height:42px}
 #w7-music-close{margin-top:9px;padding:7px 11px;border:1px solid #ffffff30;border-radius:7px;background:#ffffff0c;color:#ddd;font-size:10px;font-weight:700;cursor:pointer}
 @media(max-width:600px){#w7-music-widget{right:12px;bottom:12px}#w7-music-toggle{padding:11px 14px;font-size:10px}}
 </style>
@@ -402,7 +402,7 @@ function showToast(){const el=document.getElementById('toast');el.classList.add(
 <div id="w7-music-widget" aria-label="Música da W7">
   <div id="w7-music-panel" hidden>
     <strong>TRILHA SONORA • W7 FRANÇA</strong>
-    <div id="w7-music-frame" title="Música da W7 França"></div>
+    <audio id="w7-music-audio" preload="auto" loop playsinline><source src="https://raw.githubusercontent.com/amandaroberttaa96-beep/w7-franca/main/WhatsApp%20Audio%202026-11-17%20at%2023.27.09.mpeg" type="audio/mpeg"></audio>
     <button id="w7-music-close" type="button">FECHAR PLAYER</button>
   </div>
   <button id="w7-music-toggle" type="button" aria-expanded="false">♫ <span>OUVIR MÚSICA</span></button>
@@ -411,61 +411,46 @@ function showToast(){const el=document.getElementById('toast');el.classList.add(
 (()=>{
  const toggle=document.getElementById("w7-music-toggle");
  const panel=document.getElementById("w7-music-panel");
- const frame=document.getElementById("w7-music-frame");
+ const audio=document.getElementById("w7-music-audio");
  const close=document.getElementById("w7-music-close");
- if(!toggle||!panel||!frame||!close)return;
- const video="kiXPXUaA--Q";
- let player=null,apiLoading=false,soundRequested=false,playerReady=false;
+ if(!toggle||!panel||!audio||!close)return;
  const label=toggle.querySelector("span");
- const loadPlayer=()=>{
-   if(player||apiLoading)return;
-   apiLoading=true;
-   window.onYouTubeIframeAPIReady=()=>{
-     player=new YT.Player("w7-music-frame",{
-       videoId:video,
-       playerVars:{autoplay:1,mute:1,playsinline:1,controls:1,rel:0},
-       events:{
-         onReady:(event)=>{
-           playerReady=true;
-           event.target.mute();
-           event.target.playVideo();
-           if(soundRequested) activateSound();
-         }
-       }
-     });
-   };
-   const api=document.createElement("script");
-   api.src="https://www.youtube.com/iframe_api";
-   document.head.appendChild(api);
- };
  const start=()=>{
    panel.hidden=false;
    toggle.setAttribute("aria-expanded","true");
-   label.textContent="TOQUE PARA ATIVAR O SOM";
-   loadPlayer();
- };
- const activateSound=()=>{
-   soundRequested=true;
-   if(!playerReady||!player)return;
-   player.unMute();
-   player.setVolume(100);
-   player.playVideo();
-   label.textContent="SOM ATIVADO • FECHAR";
+   const result=audio.play();
+   if(result&&typeof result.then==="function"){
+     result.then(()=>{label.textContent="TRILHA W7 • TOQUE PARA PAUSAR";})
+       .catch(()=>{label.textContent="TOQUE PARA OUVIR A TRILHA W7";});
+   }
  };
  const shut=()=>{
+   audio.pause();
    panel.hidden=true;
-   if(player&&playerReady)player.pauseVideo();
    toggle.setAttribute("aria-expanded","false");
-   label.textContent="OUVIR MÚSICA";
+   label.textContent="OUVIR TRILHA W7";
  };
  toggle.addEventListener("click",()=>{
-   if(panel.hidden)start();
-   else if(!soundRequested)activateSound();
-   else shut();
+   if(panel.hidden){start();return;}
+   if(audio.paused){
+     const result=audio.play();
+     if(result&&typeof result.catch==="function")result.catch(()=>{label.textContent="TOQUE PARA OUVIR A TRILHA W7";});
+   }else{
+     audio.pause();
+     label.textContent="TRILHA W7 • TOQUE PARA OUVIR";
+   }
  });
  close.addEventListener("click",shut);
- // A API mantém o mesmo vídeo em reprodução ao liberar o áudio, sem recarregar o player.
- start();
+ // Tenta tocar com som assim que a página abre. Se o navegador bloquear,
+ // o primeiro toque do visitante inicia o mesmo arquivo sem recarregar.
+ panel.hidden=false;
+ toggle.setAttribute("aria-expanded","true");
+ label.textContent="CARREGANDO TRILHA W7";
+ const autoplay=audio.play();
+ if(autoplay&&typeof autoplay.then==="function"){
+   autoplay.then(()=>{label.textContent="TRILHA W7 • TOQUE PARA PAUSAR";})
+     .catch(()=>{label.textContent="TOQUE PARA OUVIR A TRILHA W7";});
+ }
 })();
 </script>
 </body></html>
