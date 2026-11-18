@@ -402,7 +402,7 @@ function showToast(){const el=document.getElementById('toast');el.classList.add(
 <div id="w7-music-widget" aria-label="Música da W7">
   <div id="w7-music-panel" hidden>
     <strong>TRILHA SONORA • W7 FRANÇA</strong>
-    <iframe id="w7-music-frame" title="Música da W7 França" allow="autoplay; encrypted-media; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <div id="w7-music-frame" title="Música da W7 França"></div>
     <button id="w7-music-close" type="button">FECHAR PLAYER</button>
   </div>
   <button id="w7-music-toggle" type="button" aria-expanded="false">♫ <span>OUVIR MÚSICA</span></button>
@@ -415,35 +415,56 @@ function showToast(){const el=document.getElementById('toast');el.classList.add(
  const close=document.getElementById("w7-music-close");
  if(!toggle||!panel||!frame||!close)return;
  const video="kiXPXUaA--Q";
- let soundEnabled=false;
- const videoUrl=(muted)=>"https://www.youtube.com/embed/"+video+"?autoplay=1&mute="+(muted?"1":"0")+"&playsinline=1&controls=1&rel=0";
+ let player=null,apiLoading=false,soundRequested=false,playerReady=false;
+ const label=toggle.querySelector("span");
+ const loadPlayer=()=>{
+   if(player||apiLoading)return;
+   apiLoading=true;
+   window.onYouTubeIframeAPIReady=()=>{
+     player=new YT.Player("w7-music-frame",{
+       videoId:video,
+       playerVars:{autoplay:1,mute:1,playsinline:1,controls:1,rel:0},
+       events:{
+         onReady:(event)=>{
+           playerReady=true;
+           event.target.mute();
+           event.target.playVideo();
+           if(soundRequested) activateSound();
+         }
+       }
+     });
+   };
+   const api=document.createElement("script");
+   api.src="https://www.youtube.com/iframe_api";
+   document.head.appendChild(api);
+ };
  const start=()=>{
    panel.hidden=false;
    toggle.setAttribute("aria-expanded","true");
-   soundEnabled=false;
-   toggle.querySelector("span").textContent="TOQUE PARA ATIVAR O SOM";
-   if(!frame.src) frame.src=videoUrl(true);
+   label.textContent="TOQUE PARA ATIVAR O SOM";
+   loadPlayer();
  };
- const enableSound=()=>{
-   soundEnabled=true;
-   toggle.querySelector("span").textContent="SOM ATIVADO • FECHAR";
-   frame.src=videoUrl(false);
+ const activateSound=()=>{
+   soundRequested=true;
+   if(!playerReady||!player)return;
+   player.unMute();
+   player.setVolume(100);
+   player.playVideo();
+   label.textContent="SOM ATIVADO • FECHAR";
  };
  const shut=()=>{
    panel.hidden=true;
-   frame.src="";
-   soundEnabled=false;
+   if(player&&playerReady)player.pauseVideo();
    toggle.setAttribute("aria-expanded","false");
-   toggle.querySelector("span").textContent="OUVIR MÚSICA";
+   label.textContent="OUVIR MÚSICA";
  };
  toggle.addEventListener("click",()=>{
-   if(panel.hidden) start();
-   else if(!soundEnabled) enableSound();
+   if(panel.hidden)start();
+   else if(!soundRequested)activateSound();
    else shut();
  });
  close.addEventListener("click",shut);
- // Vídeo começa automaticamente sem áudio, comportamento permitido na maioria dos celulares.
- // O primeiro toque do visitante libera a tentativa de reprodução com som.
+ // A API mantém o mesmo vídeo em reprodução ao liberar o áudio, sem recarregar o player.
  start();
 })();
 </script>
