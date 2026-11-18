@@ -447,10 +447,20 @@ function showToast(){const el=document.getElementById('toast');el.classList.add(
  toggle.setAttribute("aria-expanded","true");
  label.textContent="CARREGANDO TRILHA W7";
  const autoplay=audio.play();
+ const updatePlaybackLabel=()=>{
+   label.textContent=audio.paused?"TOQUE PARA OUVIR A TRILHA W7":"TRILHA W7 • TOQUE PARA PAUSAR";
+ };
  if(autoplay&&typeof autoplay.then==="function"){
-   autoplay.then(()=>{label.textContent="TRILHA W7 • TOQUE PARA PAUSAR";})
-     .catch(()=>{label.textContent="TOQUE PARA OUVIR A TRILHA W7";});
+   autoplay.then(updatePlaybackLabel).catch(()=>{label.textContent="TOQUE EM QUALQUER LUGAR PARA OUVIR";});
  }
+ // Celulares podem bloquear autoplay com áudio. A primeira interação do visitante
+ // em qualquer ponto da página inicia a trilha, sem exigir o botão do player.
+ document.addEventListener("pointerdown",()=>{
+   if(audio.paused){
+     const playAttempt=audio.play();
+     if(playAttempt&&typeof playAttempt.then==="function")playAttempt.then(updatePlaybackLabel).catch(updatePlaybackLabel);
+   }
+ },{once:true,capture:true});
 })();
 </script>
 </body></html>
